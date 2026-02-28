@@ -3,7 +3,7 @@ import requests
 from flask_cors import CORS
 import os
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://advokat-uzb-1.onrender.com"])
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
@@ -21,6 +21,12 @@ def send():
     lawyer = data.get("lawyer")
     text = data.get("text")
 
+    if not name or not phone or not lawyer or not text:
+        return jsonify({"error": "Invalid data"}), 400
+
+    if len(text) > 1000:
+        return jsonify({"error": "Message too long"}), 400
+
     message = f"""
 📩 Yangi murojaat
 👤 {name}
@@ -35,9 +41,11 @@ def send():
         "text": message
     })
 
+    if response.status_code != 200:
+        return jsonify({"error": "Telegram failed"}), 500
+
     return jsonify({"status": "ok"})
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
