@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advokatlar xizmati</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url("images/bg.jpg") center/cover fixed no-repeat;
+            color: white;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            border-radius: 15px;
+            width: 280px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: 0.4s;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card h3,
+        .card p {
+            color: white;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.6s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border: 1px solid #c9a227;
+            box-shadow: 0 0 10px rgba(201, 162, 39, 0.6);
+        }
+
+        input,
+        select,
+        textarea {
+            font-size: 18px;
+            padding: 16px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #c9a227, #f1d36b);
+            color: black;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(201, 162, 39, 0.6);
+        }
+
+        .hero {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url("images/bg.jpg") center/cover no-repeat;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .hero-btn {
+            background: white;
+            color: black;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .contact-section {
+            margin-top: 80px;
+            text-align: center;
+            padding: 80px 40px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-section h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .contact-section p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+
+
+        .popup {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #c9a227;
+            color: black;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+        }
+
+        .popup.show {
+            opacity: 1;
+        }
+
+        .success-popup {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-popup.show {
+            opacity: 1;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #c9a227, #f1d36b);
+            -webkit-text-fill-color: text, transparent;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #c9a227, #f1d36b);
+            color: black;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(201, 162, 39, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 12px;
+        }
+
+        @media(max-width:768px) {
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 90%;
+            }
+        }
+
+        @media(max-width:768px) {
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+        }
+
+        @media(max-width:768px) {
+            .contact-section {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            input,
+            select,
+            textarea {
+                font-size: 16px;
+            }
+        }
+
+        .call-btn {
+            display: inline-block;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #28a745, #4cd964);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .call-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 style="text-align:center;font-size:40px;margin-bottom:30px">Advokatlar xizmati</h1>
+        <p style="text-align:center;font-size:30px;margin-bottom:20px">Jinoyat va fuqarolik ishlari bo‘yicha
+            professional yordam</p>
+    </header>
+
+    <div class="container">
+
+        <h2 style="text-align:center;font-size:40px;margin-bottom:30px">
+            Bizning advokatlar
+        </h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <img src="images/sardor.jpg" alt="" style="width:220px;height:220px;border-radius:50%;object-fit:cover">
+                <h3>Jumaniyozov Sardor Abdunabi o'g'li</h3>
+                <p>Jinoyat ishlari</p>
+                <p>"Yaxshi advakatlar ko'p ammo tanlov faqat bitta bo'ladi"</p>
+                <p>Birinchi darajali yurist</p>
+                <p>Advokatlik tajribasi 3 yil, faolyati davomida 50 dan ortiq ishda muvofaqiyat qozongan</p>
+                <a href="tel:+998919119111" class="call-btn">📞 Qo‘ng‘iroq qilish</a>
+            </div>
+
+            <div class="card">
+                <img src="images/shohjahon.jpg" alt=""
+                    style="width:220px;height:220px;border-radius:50%;object-fit:cover">
+                <h3>Turdimurodov Shohjahon Urol o'g'li</h3>
+                <p>Fuqarolik ishlari</p>
+                <p>"Advokatlik kasbim emas, bu mening hayotim"</p>
+                <P>Ikkinchi darajali yurist</P>
+                <p>Advokatlik tajribasi 1 yil, faolyati davomida 20 dan ortiq ishda muvofaqiyat qozongan</p>
+                <a href="tel:+998505530099" class="call-btn">📞 Qo‘ng‘iroq qilish</a>
+            </div>
+
+            <div class="card">
+                <img src="images/islom.jpg" alt="" style="width:220px;height:220px;border-radius:50%;object-fit:cover">
+                <h3>Quvondiqov San'at Akmal o'g'li</h3>
+                <p>Ma'muriy va fuqorolik ishlari</p>
+                <p>"Sizning himoyangiz ishonchli qo'llarda bo'ladi"</p>
+                <p>Ikkinchi darajali yurist</p>
+                <p>Advokatlik tajribasi 2 yil, faolyati davomida 30 dan ortiq ishda muvoffaqiyat qozongan</p>
+                <a href="tel:+998505530099" class="call-btn">📞 Qo‘ng‘iroq qilish</a>
+            </div>
+
+            <div class="card">
+                <img src="images/sanatbek.jpg" alt=""
+                    style="width:220px;height:220px;border-radius:50%;object-fit:cover">
+                <h3>Samadov Islom Ilhomovich</h3>
+                <p>Sud vakilligi va fuqorolik ishlari</p>
+                <p>"Himoyalanishingiz uchun eng ideal tanlovni taklif qilamiz!!!"</p>
+                <p>Ikkinchi darajali yurist</p>
+                <p>Advokatlik tajribasi 2 yil, faolyati davomida 30 dan ortiq ishda muvoffaqiyat qozongan</p>
+                <a href="tel:+998505530099" class="call-btn">📞 Qo‘ng‘iroq qilish</a>
+            </div>
+
+        </div>
+
+        <div class="contact-section" id="form">
+
+            <button class="btn">Murojaat qilish</button>
+            <p style="text-align:center;font-size:25px;margin-bottom:15px">
+                Har bir murojaat maxfiy saqlanadi. Advokatlarimiz tez orada siz bilan bog‘lanadi.</p>
+
+
+            <form id="form1">
+
+                <input type="text" id="name" placeholder="Ism familiya" required>
+
+                <input type="tel" id="phone" value="+998" maxlength="13" class="input">
+                <select id="lawyer">
+                    <option>Jinoyat advokat</option>
+                    <option>Fuqarolik advokat</option>
+                </select>
+
+                <textarea id="text" placeholder="Muammo tavsifi"></textarea>
+
+                <button type="submit">Yuborish</button>
+
+            </form>
+
+        </div>
+
+        <script>
+            const phoneInput = document.getElementById("phone");
+
+            /* +998 o‘chmasin */
+            phoneInput.addEventListener("input", () => {
+                if (!phoneInput.value.startsWith("+998")) {
+                    phoneInput.value = "+998";
+                }
+            });
+
+            phoneInput.addEventListener("keydown", function (e) {
+                if (phoneInput.selectionStart <= 4 && (e.key === "Backspace" || e.key === "Delete")) {
+                    e.preventDefault();
+                }
+            });
+
+
+            /* FORM */
+            const form = document.getElementById("form1");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                let token = "8731240805:AAEOsz4JoqUo7Gu0fw5_O5ICgxC25Ulcqjo";
+                let chat_id = "938096104";
+
+                const btn = form.querySelector("button[type='submit']");
+                btn.disabled = true;
+
+                let name = document.getElementById("name").value.trim();
+                let phone = document.getElementById("phone").value.trim();
+                let lawyer = document.getElementById("lawyer").value;
+                let text = document.getElementById("text").value;
+
+                if (name.split(/\s+/).length < 2) {
+                    alert("Ism va familiya kiriting");
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (!/^\+998\d{9}$/.test(phone)) {
+                    alert("Telefon to‘liq yozilishi kerak (+998XXXXXXXXX)");
+                    btn.disabled = false;
+                    return;
+                }
+
+                let message = `📩 Yangi murojaat
+👤 Ism familiya: ${name}
+📞 Telefon: ${phone}
+⚖️ Advokat: ${lawyer}
+📝 Muammo: ${text}`;
+
+    fetch("https://advokat-uzb.onrender.com/send", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name,
+    phone,
+    lawyer,
+    text
+  })
+})
+
+                    .then(() => {
+                        /* popup chiqarish */
+                        const success = document.getElementById("success");
+                        success.classList.add("show");
+
+                        setTimeout(() => {
+                            success.classList.remove("show");
+                        }, 3000);
+
+                        form.reset();
+                        phoneInput.value = "+998";
+                        btn.disabled = false;
+                    })
+                    .catch(() => {
+                        alert("Xabar yuborilmadi");
+                        btn.disabled = false;
+                    });
+            });
+        </script>
+
+        <div id="success" class="success-popup">
+            ✅ Murojaat qabul qilindi
+        </div>
+</body>
+
+</html>
