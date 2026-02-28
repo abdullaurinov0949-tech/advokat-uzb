@@ -1,51 +1,91 @@
-from flask import Flask, request, jsonify
-import requests
-from flask_cors import CORS
 import os
-app = Flask(__name__)
-CORS(app=["https://advokat-uzb-1.onrender.com"])
+import requests
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+# ================= CONFIG =================
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-@app.route("/")
+if not TOKEN or not CHAT_ID:
+    raise RuntimeError("TOKEN yoki CHAT_ID environment variable topilmadi")
+
+# ================= APP INIT =================
+
+app = Flask(__name__)
+
+CORS(app, origins=[
+    "https://advokat-uzb-1.onrender.com"
+])
+
+# ================= ROUTES =================
+
+@app.route("/", methods=["GET"])
 def home():
-    return "Backend ishlayapti ✅"
+    return jsonify({"status": "Backend ishlayapti ✅"}), 200
+
 
 @app.route("/send", methods=["POST"])
 def send():
-    data = request.json
+    try:
+        data = request.get_json()
 
-    name = data.get("name")
-    phone = data.get("phone")
-    lawyer = data.get("lawyer")
-    text = data.get("text")
+        if not data:
+            return jsonify({"error": "JSON data required"}), 400
 
-    if not name or not phone or not lawyer or not text:
-        return jsonify({"error": "Invalid data"}), 400
+        name = data.get("name", "").strip()
+        phone = data.get("phone", "").strip()
+        lawyer = data.get("lawyer", "").strip()
+        text = data.get("text", "").strip()
 
-    if len(text) > 1000:
-        return jsonify({"error": "Message too long"}), 400
+        # ========= VALIDATION =========
 
-    message = f"""
+        if not all([name, phone, lawyer, text]):
+            return jsonify({"error": "All fields required"}), 400
+
+        if len(text) > 1000:
+            return jsonify({"error": "Message too long"}), 400
+
+        if not phone.startswith("+998") or len(phone) != 13:
+            return jsonify({"error": "Invalid phone format"}), 400
+
+        # ========= TELEGRAM MESSAGE =========
+
+        message = f"""
 📩 Yangi murojaat
-👤 {name}
-📞 {phone}
-⚖️ {lawyer}
-📝 {text}"""
+👤 Ism: {name}
+📞 Telefon: {phone}
+⚖️ Advokat: {lawyer}
+📝 Muammo:
+{text}
+"""
 
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        telegram_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
-    requests.post(url, json={
-        "chat_id": CHAT_ID,
-        "text": message
-    })
+        response = requests.post(
+            telegram_url,
+            json={
+                "chat_id": CHAT_ID,
+                "text": message
+            },
+            timeout=10
+        )
 
-    if response.status_code != 200:
-        return jsonify({"error": "Telegram failed"}), 500
+        if response.status_code != 200:
+            return jsonify({"error": "Telegram API error"}), 502
 
-    return jsonify({"status": "ok"})
+        return jsonify({"status": "ok"}), 200
 
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "Telegram timeout"}), 504
+
+    except Exception as e:
+        print("Server error:", e)
+        return jsonify({"error": "Internal server error"}), 500
+
+
+# ================= MAIN =================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
