@@ -3,11 +3,12 @@ import requests
 from flask_cors import CORS
 import os
 app = Flask(__name__)
-CORS(app=["https://advokat-uzb-1.onrender.com"])
+CORS(app, origins=["https://advokat-uzb-1.onrender.com"])
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-
+print("TOKEN:", TOKEN)
+print("CHAT_ID:", CHAT_ID)
 @app.route("/")
 def home():
     return "Backend ishlayapti ✅"
