@@ -7,8 +7,7 @@ CORS(app, origins=["https://advokat-uzb-b.onrender.com"])
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-print("TOKEN:", TOKEN)
-print("CHAT_ID:", CHAT_ID)
+
 @app.route("/")
 def home():
     return "Backend ishlayapti ✅"
