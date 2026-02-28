@@ -3,7 +3,7 @@ import requests
 from flask_cors import CORS
 import os
 app = Flask(__name__)
-CORS(app, origins=["https://advokat-uzb-1.onrender.com"])
+CORS(app=["https://advokat-uzb-1.onrender.com"])
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
