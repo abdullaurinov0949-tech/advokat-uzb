@@ -18,7 +18,8 @@ def send():
     lawyer = data.get("lawyer")
     text = data.get("text")
 
-    message = f"""📩 Yangi murojaat
+    message = f"""
+📩 Yangi murojaat
 👤 {name}
 📞 {phone}
 ⚖️ {lawyer}
