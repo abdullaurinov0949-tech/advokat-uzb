@@ -7,7 +7,9 @@ CORS(app)
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-
+@app.route("/")
+def home():
+    return "Backend ishlayapti ✅"
 @app.route("/send", methods=["POST"])
 def send():
     data = request.json
