@@ -1,16 +1,17 @@
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
-
+import os
 app = Flask(__name__)
 CORS(app)
 
-TOKEN = "8731240805:AAEOsz4JoqUo7Gu0fw5_O5ICgxC25Ulcqjo"
-CHAT_ID = "938096104"
+TOKEN = os.getenv("TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
 @app.route("/send", methods=["POST"])
 def send():
     data = request.json
+
 
     name = data.get("name")
     phone = data.get("phone")
@@ -34,5 +35,5 @@ def send():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
     
